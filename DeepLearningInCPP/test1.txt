@@ -1,0 +1,8 @@
+Image Actual Label: 1
+Our predicted Label: 1
+
+ **
+  *
+***
+
+-------
