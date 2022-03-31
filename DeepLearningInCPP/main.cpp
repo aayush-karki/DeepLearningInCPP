@@ -6,25 +6,14 @@
 
 #include "FileReader.h"
 #include "FileWriter.h"
+#include "MnistParser.h"
 
 int main()
 {
-	FileReader readTestLabel("t10k-labels-idx1-ubyte");
-	FileReader readTestImg("t10k-images-idx3-ubyte");
-	FileReader readTrainImg("train-images-idx3-ubyte");
-	FileReader readTrainlaber("train-labels-idx1-ubyte");
-
-	FileWriter wFile("test1.txt");
-	
-	std::vector<int> aOut = { 1 };
-	std::vector<int> pOut = { 1 };
-	std::vector<std::vector<int>> img = { {0,2,3,0,0,6,7,8,9} };
-
-	std::cout << aOut.size() << " " << pOut.size() << " " << img.size();
-
-	wFile.WrtiePrectionsToFile(aOut, pOut, img, 3, 3);
-	
-
+	MnistParser trainSet("t10k-labels.idx1-ubyte", "t10k-images.idx3-ubyte");
+	FileWriter printTrainSet("test1.txt");
+	printTrainSet.WrtiePrectionsToFile(trainSet.GetActualLabels(), trainSet.GetActualLabels(),
+		trainSet.GetDataSet(), trainSet.GetImgRow(), trainSet.GetImgCol());
 
 	return 0;
 }

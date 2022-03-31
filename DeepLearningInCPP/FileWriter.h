@@ -24,10 +24,10 @@
 class FileWriter
 {
 public:
-	FileWriter(std::string a_fileName); // constructor
+	FileWriter(std::string a_FilePath); // constructor
 	~FileWriter(); // deconstructor
-	void WrtiePrectionsToFile(const std::vector<int>& a_actualOutput, const std::vector<int>& a_predictedOutput,
-		const std::vector<std::vector<int>>& a_inputSet, int a_imgRow, int a_imgCol);
+	void WrtiePrectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
+		const std::vector<std::vector<uint8_t>>& a_inputSet, uint32_t a_imgRow, uint32_t a_imgCol);
 	//bool WrtieAllToFile(std::string& a_line); // writes the tresting result to a file
 	
 	/// @todo: maybe in the future write a function to plot to a graph

@@ -17,13 +17,13 @@
 /// 
 /// @brief constructor, creates and opens the file.
 ///
-/// @param a_fileName: name of the file to be opened
+/// @param a_FilePath: name of the file to be opened
 /// @param a_openIstream: true if open as istream, false if open as ostream
 /// 
-FileWriter::FileWriter(std::string a_fileName)
+FileWriter::FileWriter(std::string a_FilePath)
 {
 	// opening the file
-	m_oFile.open(a_fileName, std::ios::binary);
+	m_oFile.open(a_FilePath, std::ios::binary);
 
 	// checking if the file opened or not
 	if (!m_oFile.is_open())
@@ -51,22 +51,23 @@ FileWriter::~FileWriter()
 /// @param a_imgRow number of row of pixel in one image
 /// @param a_imgCol number of column of pixel in one image
 /// 
-void FileWriter::WrtiePrectionsToFile(const std::vector<int>& a_actualOutput, const std::vector<int>& a_predictedOutput,
-	const std::vector<std::vector<int>>& a_inputSet, int a_imgRow, int a_imgCol)
+void FileWriter::WrtiePrectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
+	const std::vector<std::vector<uint8_t>>& a_inputSet, uint32_t a_imgRow, uint32_t a_imgCol)
 {
 	// checking that the size is same
-	assert(a_actualOutput.size() == a_predictedOutput.size() == a_inputSet.size());
+	assert(a_actualOutput.size() == a_predictedOutput.size());
+	assert(a_predictedOutput.size() == a_inputSet.size());
 
-	for (unsigned i = 0; i < a_actualOutput.size(); i++) 
+	for (unsigned currOutputIdx = 0; currOutputIdx < a_actualOutput.size(); ++currOutputIdx)
 	{
-		m_oFile << "Image Actual Label: " << a_actualOutput.at(i) << "\n";
-		m_oFile << "Our predicted Label: " << a_actualOutput.at(i)<< "\n" << "\n";
+		m_oFile << "Image Actual Label: " << a_actualOutput.at(currOutputIdx) << "\n";
+		m_oFile << "Our predicted Label: " << a_actualOutput.at(currOutputIdx)<< "\n" << "\n";
 
 		// writing the representation of the image to the file in the form of ascii char '*'
-		// assumes that the number of row and 
-		for (unsigned row = 0; row < a_imgRow; row++) {
-			for (unsigned col = 0; col < a_imgCol; col++) {
-				if (a_inputSet[i][row * a_imgRow + col] == 0) {
+		for (uint32_t row = 0; row < a_imgRow; row++) {
+			for (uint32_t col = 0; col < a_imgCol; col++) {
+				std::cout << a_inputSet[currOutputIdx][row * a_imgRow + col] <<std::endl;
+				if (a_inputSet[currOutputIdx][row * a_imgRow + col] == 0) {
 					m_oFile << " ";
 				}
 				else {
@@ -76,7 +77,7 @@ void FileWriter::WrtiePrectionsToFile(const std::vector<int>& a_actualOutput, co
 			m_oFile << "\n";
 		}
 
-		int fillWidth = 0;
+		uint32_t fillWidth = 0;
 		if (a_imgCol < 25)
 		{
 			fillWidth = 30;
@@ -88,7 +89,6 @@ void FileWriter::WrtiePrectionsToFile(const std::vector<int>& a_actualOutput, co
 
 		m_oFile << "\n" << std::setw(fillWidth) << std::setfill('-') << "\n";
 		m_oFile << std::setfill(' ');
-
 	}
 }
 

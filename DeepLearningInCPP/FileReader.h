@@ -23,9 +23,10 @@
 class FileReader
 {
 public:
-	FileReader(std::string a_fileName); // constructor
+	FileReader(std::string a_FilePath); // constructor
 	~FileReader(); // deconstructor
-	bool GetNextLine(std::string& a_line); // gets a line from the file
+	bool ExtractFromFile(char* a_extracted, std::size_t a_sizeToExtract); // extracts a number from file
+	bool GetNextLine(std::string& a_line); // extracts a number from file
 	bool CheckEOF();
 
 private:
