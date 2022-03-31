@@ -26,7 +26,7 @@ class FileWriter
 public:
 	FileWriter(std::string a_FilePath); // constructor
 	~FileWriter(); // deconstructor
-	void WrtiePrectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
+	void WrtiePrdectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
 		const std::vector<std::vector<uint8_t>>& a_inputSet, uint32_t a_imgRow, uint32_t a_imgCol);
 	//bool WrtieAllToFile(std::string& a_line); // writes the tresting result to a file
 	

@@ -51,7 +51,7 @@ FileWriter::~FileWriter()
 /// @param a_imgRow number of row of pixel in one image
 /// @param a_imgCol number of column of pixel in one image
 /// 
-void FileWriter::WrtiePrectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
+void FileWriter::WrtiePrdectionsToFile(const std::vector<uint8_t>& a_actualOutput, const std::vector<uint8_t>& a_predictedOutput,
 	const std::vector<std::vector<uint8_t>>& a_inputSet, uint32_t a_imgRow, uint32_t a_imgCol)
 {
 	// checking that the size is same
@@ -60,8 +60,8 @@ void FileWriter::WrtiePrectionsToFile(const std::vector<uint8_t>& a_actualOutput
 
 	for (unsigned currOutputIdx = 0; currOutputIdx < a_actualOutput.size(); ++currOutputIdx)
 	{
-		m_oFile << "Image Actual Label: " << a_actualOutput.at(currOutputIdx) << "\n";
-		m_oFile << "Our predicted Label: " << a_actualOutput.at(currOutputIdx)<< "\n" << "\n";
+		m_oFile << "Image Actual Label: " << (uint32_t)a_actualOutput.at(currOutputIdx) << "\n";
+		m_oFile << "Our predicted Label: " << (uint32_t)a_actualOutput.at(currOutputIdx)<< "\n" << "\n";
 
 		// writing the representation of the image to the file in the form of ascii char '*'
 		for (uint32_t row = 0; row < a_imgRow; row++) {
