@@ -140,17 +140,42 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActicationFuncitons.cpp" />
     <ClCompile Include="FileWriter.cpp" />
+    <ClCompile Include="HyperParameters.cpp" />
+    <ClCompile Include="InputNeuron.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="MnistParser.cpp" />
+    <ClCompile Include="NeuralNetwork.cpp" />
+    <ClCompile Include="NeuralNetworkLayer.cpp" />
+    <ClCompile Include="Neuron.cpp" />
+    <ClCompile Include="OutputNeuron.cpp" />
+    <ClCompile Include="RandomNumGenerator.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActicationFuncitons.h" />
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="FileWriter.h" />
+    <ClInclude Include="HyperParameters.h" />
+    <ClInclude Include="InputNeuron.h" />
     <ClInclude Include="MnistParser.h" />
+    <ClInclude Include="NeuralNetwork.h" />
+    <ClInclude Include="NeuralNetworkLayer.h" />
+    <ClInclude Include="Neuron.h" />
+    <ClInclude Include="OutputNeuron.h" />
+    <ClInclude Include="RandomNumGenerator.h" />
     <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="t10k-images.idx3-ubyte" />
+    <None Include="t10k-labels.idx1-ubyte" />
+    <None Include="train-images.idx3-ubyte" />
+    <None Include="train-labels.idx1-ubyte" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -54,6 +54,7 @@ bool FileReader::ExtractFromFile(char* a_extracted, std::size_t a_sizeToExtract)
 		return false;
 	}
 	m_iFile.read(a_extracted, a_sizeToExtract);
+	return true;
 }
  
 ///@brief GetNextLine gets the next line from the source file.  
