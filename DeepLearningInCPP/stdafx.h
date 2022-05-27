@@ -19,5 +19,6 @@
 #include <string>
 #include <vector>
 #include <assert.h>
+#include <math.h>
 
 #include "HyperParameters.h"

@@ -6,39 +6,34 @@ class Neuron
 {
 	// ===================== Public Member Function =================
 public:
-	Neuron(); // default constructor
-	
-	// getter functions
-	const std::vector<long double>& GetWeightList() const; 
-	const long double GetBias() const;
-	const long double GetActivationValue() const;
-	const long double GetCachedActivationValue() const;
-	const long double GetZValPreActivation() const;
-	const long double GetZValPostActivation() const;
-	
-	virtual void InitializeRandomParameters(unsigned a_previousLayerWidth); // randomizes the weight and bias 
-	virtual void LinerActivation(const std::vector<Neuron*>& a_prevNNLayerNeurons,
-						 AF::ENUM_ActiFunc a_activationFunc); // function for forward propagation
-	
-	// ===================== Private Member Function =================
-private:
-	long double LinerForward(const std::vector<Neuron*>& a_prevNNLayerNeurons) const; // activation function
-	long double ActivationFunciton(double a_val, AF::ENUM_ActiFunc a_activationFunc) const;
+	Neuron(int a_numData); // default constructor
+	virtual ~Neuron(); // default destructor
 
-	// ===================== Private Data Member ====================
-private:
+	// getter functions
+	const std::vector<long double>& GetWeightList() const;
+	const long double GetBias() const;
+	
+	const  std::vector<long double>& GetZValPreActivation() const;
+	const  std::vector<long double>& GetActivationValue() const;
+	
+	//setter function 
+	void SetActivationValue( long double a_value ); // only for input neuron
+	void SetActivationFunction( const AF::ENUM_ActiFunc a_ActivationFunc );
+
+	virtual void InitializeRandomParameters(unsigned a_previousLayerWidth); // randomizes the weight and bias 
+	virtual void LinerActivation(const std::vector<Neuron*>& a_prevNNLayerNeurons); // function for forward propagation
+	const long double CalculateLoss( uint8_t a_actualLabel ) const;
+
+	long double LinerForward(const std::vector<Neuron*>& a_prevNNLayerNeurons) const; // activation function
+	long double ActivationFunciton() const;
+
 	std::vector<long double> m_weightList; // list of weights for each neuron from previous layer
 	long double m_bias;
 
-	long double m_activationValue;
-	long double m_cachedActivationValue;
+	std::vector<long double> m_zValPreAct; // strors the value pre activation function 
+	std::vector<long double> m_activationValue; // strors the value post activation function 
 	
-	long double m_zValPreAct; // strors the value pre activation function 
-	long double m_zValPostAct; // strors the value pre activation function 
-
-	AF::ENUM_ActiFunc m_cachedActivationFuncUsed; 
-
-
+	AF::ENUM_ActiFunc m_activationFunc;
 };
 
 ///
@@ -48,11 +43,17 @@ private:
 /// It initializes the data member to UNINIALIZED 
 ///		and cachedActivationFunc to none
 /// 
-inline Neuron::Neuron() :
+/// @param a_numData number of train/test data
+/// 
+inline Neuron::Neuron( int a_numData ) :
 	m_weightList({}), m_bias(UNINIALIZED),
-	m_activationValue(UNINIALIZED), m_cachedActivationValue(UNINIALIZED),
-	m_zValPreAct(UNINIALIZED), m_zValPostAct(UNINIALIZED),
-	m_cachedActivationFuncUsed(AF::ENUM_ActiFunc::m_none)
+	m_activationFunc(AF::ENUM_ActiFunc::m_none)
+{
+	m_activationValue.reserve( a_numData );
+	m_zValPreAct.reserve( a_numData );
+}
+
+inline Neuron::~Neuron()
 {}
 
 /// 
@@ -75,22 +76,33 @@ inline const long double Neuron::GetBias() const
 	return m_bias;
 }
 
-inline const long double Neuron::GetActivationValue() const
+inline const  std::vector<long double>& Neuron::GetActivationValue() const
 {
 	return m_activationValue;
 }
 
-inline const long double Neuron::GetCachedActivationValue() const
-{
-	return m_cachedActivationValue;
-}
-
-inline const long double Neuron::GetZValPreActivation() const
+inline const  std::vector<long double>& Neuron::GetZValPreActivation() const
 {
 	return m_zValPreAct;
 }
 
-inline const long double Neuron::GetZValPostActivation() const
+inline void Neuron::SetActivationValue( long double  a_value)
 {
-	return m_zValPostAct;
+	m_activationValue = a_value;
+}
+
+inline void Neuron::SetActivationFunction( const AF::ENUM_ActiFunc a_ActivationFunc )
+{
+	m_activationFunc = a_ActivationFunc;
+}
+
+///
+/// @brief  calcultes the loss of the output 
+/// @warning call only on output neuron
+/// 
+/// @param a_actualLabel  actual label 
+/// @return loss of the neuron
+inline const long double Neuron::CalculateLoss( uint8_t a_actualLabel ) const
+{
+	return ( a_actualLabel * std::log( m_activationValue ) ) + ( ( 1 - a_actualLabel ) * std::log( 1 - m_activationValue ) );
 }

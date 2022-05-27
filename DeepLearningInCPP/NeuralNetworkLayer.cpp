@@ -37,6 +37,9 @@ NeuralNetworkLayer::NeuralNetworkLayer(ENUM_NeuronLayerType a_layerType, unsigne
 	}
 }
 
+/// 
+/// @brief default destructor
+///
 NeuralNetworkLayer::~NeuralNetworkLayer()
 {
 	// deallocating the vectors
@@ -67,13 +70,27 @@ void NeuralNetworkLayer::InitializeRandomParameters(unsigned a_previousLayerWidt
 ///		 the pointer to neurons in previous layer
 /// @param a_activationFunc  activatoin function to call
 ///
-void NeuralNetworkLayer::ForwardPropagation(const std::vector<Neuron*>& a_prevNNLayerNeurons,
-											AF::ENUM_ActiFunc a_activationFunc)
+/// @todo: initailize the activation funciton for the neuronat the start
+///		 as they do not change that much
+/// 
+void NeuralNetworkLayer::ForwardPropagation(const std::vector<Neuron*>& a_prevNNLayerNeurons)
 {
 	// calling the linear-activation function for each neuron
 	for(unsigned i = 0; i < m_layerNeuronList.size(); ++i)
 	{
-		m_layerNeuronList[ i ]->LinerActivation(a_prevNNLayerNeurons, 
-												a_activationFunc);
+		m_layerNeuronList[ i ]->LinerActivation(a_prevNNLayerNeurons);
+	}
+}
+
+/// 
+/// @brief sets the activaiton fucition that each neuron uses
+/// @param a_ActivationFunc 
+/// 
+void NeuralNetworkLayer::SetActivaitonFunciton( const AF::ENUM_ActiFunc a_ActivationFunc )
+{
+	// setitng  the activaiton function for each neuron 
+	for( unsigned currNeuronLayerIdx = 0; currNeuronLayerIdx < m_layerNeuronList.size(); ++currNeuronLayerIdx )
+	{
+		m_layerNeuronList.at( currNeuronLayerIdx )->SetActivationFunction( a_ActivationFunc );
 	}
 }

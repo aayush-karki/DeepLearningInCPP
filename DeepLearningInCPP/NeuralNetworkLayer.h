@@ -19,12 +19,16 @@ public:
 					   unsigned a_TotalNeuralNum = 1); // constructor
 	~NeuralNetworkLayer(); // destructor
 	
-	const unsigned GetLayerWidth() const ; // getter funciton 
-	const std::vector<Neuron*>& GetLayerNeuronList() const; // getter funciton
+	// getter funciton 
+	const unsigned GetLayerWidth() const; 
+	const ENUM_NeuronLayerType GetLayerType() const ; 
+	const std::vector<Neuron*>& GetLayerNeuronList() const; 
 	
+	// setter funciton 
+	void SetActivaitonFunciton( const AF::ENUM_ActiFunc a_ActivationFunc ); // sets the activation funciton
+
 	void InitializeRandomParameters(unsigned a_previousLayerWidth); // calls the initialize parameter for each neuron
-	void ForwardPropagation(const std::vector<Neuron*>& a_prevNNLayerNeurons,
-							AF::ENUM_ActiFunc a_activationFunc);
+	void ForwardPropagation(const std::vector<Neuron*>& a_prevNNLayerNeurons);
 
 	// ===================== Private Data Member ====================
 private:
@@ -39,7 +43,7 @@ private:
 /// 
 /// @return number of neuron in the layer
 /// 
-inline const unsigned NeuralNetworkLayer::GetLayerWidth() cosnt
+inline const unsigned NeuralNetworkLayer::GetLayerWidth() const
 {
 	return m_layerWidth;
 }
@@ -53,4 +57,15 @@ inline const std::vector<Neuron*>& NeuralNetworkLayer::GetLayerNeuronList() cons
 {
 	return m_layerNeuronList;
 }
+
+/// 
+/// @brief getter function to get the layer type
+/// 
+/// @return layer type
+/// 
+inline const ENUM_NeuronLayerType NeuralNetworkLayer::GetLayerType() const
+{
+	return m_layerType;
+}
+
 
