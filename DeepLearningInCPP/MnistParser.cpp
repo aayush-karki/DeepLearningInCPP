@@ -15,6 +15,24 @@
 #include "FileReader.h"
 
 /// 
+/// @brief destructor 
+/// 
+/// deallocats the vectors the reperesents the images from the dataset
+/// 
+MnistParser::~MnistParser()
+{
+	// deallocating the vector the reperesents the images from the dataset
+	std::vector<std::vector<uint8_t>*>::iterator currIte = m_dataSet.begin();
+	
+	while( currIte != m_dataSet.end() )
+	{
+		( *currIte )->clear();
+		delete (*currIte);
+	}
+
+}
+
+/// 
 /// @brief parseing the MINST label file to construct the label vector
 ///   
 /// @param a_labelFilePath file path to label file
@@ -85,8 +103,13 @@ void MnistParser::ParseMinstSetFile(std::string& a_dataSetFilePath)
 	m_imgCol = SwapEndian(m_imgCol);
 
 	// reserving the space for number images
-	m_dataSet.resize(m_totalImgNum,std::vector<uint8_t>(m_imgRow * m_imgCol));
+	m_dataSet.resize( m_totalImgNum );
 	
+	// dynamically allocating the vector containg the pixels of a image
+	for( unsigned i = 0; i < m_totalImgNum; ++i )
+	{
+		m_dataSet.at(i) = new std::vector<uint8_t>(m_imgRow * m_imgCol, 0);
+	}
 
 	// extracting all the pixels
 	// note that all the label is in unsigned char or uint8_t format so no need to change endian 
@@ -96,10 +119,9 @@ void MnistParser::ParseMinstSetFile(std::string& a_dataSetFilePath)
 		for (unsigned currPixelIdx = 0; currPixelIdx < m_imgRow * m_imgCol; ++currPixelIdx)
 		{
 			labelFile.ExtractFromFile((char*)&tempNum, sizeof(tempNum));
-			m_dataSet[currImgIdx][currPixelIdx] = tempNum;
+			(m_dataSet.at(currImgIdx))->at(currPixelIdx) = tempNum;
 		}
 	}
-
 }
 
 /// 
@@ -115,6 +137,5 @@ uint32_t MnistParser::SwapEndian(uint32_t a_val)
 	uint32_t fourth8bits = (a_val >> 24) & 0xff;
 
 	return (first8bits << 24) + (second8bits << 16) + (third8bits << 8) + fourth8bits;
-
 }
 

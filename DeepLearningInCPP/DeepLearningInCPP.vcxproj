@@ -143,14 +143,12 @@
     <ClCompile Include="ActicationFuncitons.cpp" />
     <ClCompile Include="FileWriter.cpp" />
     <ClCompile Include="HyperParameters.cpp" />
-    <ClCompile Include="InputNeuron.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="FileReader.cpp" />
     <ClCompile Include="MnistParser.cpp" />
     <ClCompile Include="NeuralNetwork.cpp" />
     <ClCompile Include="NeuralNetworkLayer.cpp" />
     <ClCompile Include="Neuron.cpp" />
-    <ClCompile Include="OutputNeuron.cpp" />
     <ClCompile Include="RandomNumGenerator.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
@@ -159,12 +157,10 @@
     <ClInclude Include="FileReader.h" />
     <ClInclude Include="FileWriter.h" />
     <ClInclude Include="HyperParameters.h" />
-    <ClInclude Include="InputNeuron.h" />
     <ClInclude Include="MnistParser.h" />
     <ClInclude Include="NeuralNetwork.h" />
     <ClInclude Include="NeuralNetworkLayer.h" />
     <ClInclude Include="Neuron.h" />
-    <ClInclude Include="OutputNeuron.h" />
     <ClInclude Include="RandomNumGenerator.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

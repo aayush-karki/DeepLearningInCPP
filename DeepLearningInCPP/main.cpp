@@ -17,10 +17,7 @@ int main()
 
 	// inializing the hyperparametes
 	ST_HyperParameters hyperParameters;
-	hyperParameters.m_layersInfo = { 2,2,1 };
-
-
-
+	hyperParameters.m_layersInfo = { 4,2,1 };
 
 	// @TODO: add SetActivationFunction() so that we do not have to pass it 
 	// again and agian on forward pass. 
@@ -33,38 +30,23 @@ int main()
 	/*MnistParser trainSet("train-labels.idx1-ubyte", "train-images.idx3-ubyte");
 	MnistParser testSet("t10k-labels.idx1-ubyte", "t10k-images.idx3-ubyte");*/
 
-	std::vector<int> inputList = { 1,2 };
+	/// @todo delete me
+	// creating a  temp data set and actual labels
+	std::vector<std::vector<uint8_t>*> inputList;
+	std::vector<uint8_t> input1 = { 11,12,13,14 };
+	std::vector<uint8_t> input2 = { 21,22,23,24 };
+	inputList.push_back( &input1 );
+	inputList.push_back( &input2 );
+
+	std::vector<uint8_t> label = { 1,0,0,1 };
 
 	// setting up the NN
-	NeuralNetwork nnModel( hyperParameters.m_layersInfo );
-	//todo make it 
-	nnModel.SetActivaitonFunciton( activationFuncPerLayerList );
+	NeuralNetwork nnModel( input1.size(), hyperParameters.m_layersInfo );
 
-	nnModel.InitialParameters();
-	
-	//@todo delete me
-	// entering a 2 input for text purposes
-	NeuralNetworkLayer* inputLayer = nnModel.GetNeuronLayers().at( 0 );
-	if(inputLayer->GetLayerType() != ENUM_NeuronLayerType::m_inputLayer )
-	{ 
-		std::cerr << "Not Input layer!!" << std::endl;
-		return -1;
-	}
-	// checking if the number of neuron in the input layer is same as the 
-	// number of values in the input list
-	if( inputLayer->GetLayerWidth() != inputList.size() )
-	{
-		std::cerr << "Num Neuron mismatch Input layer!! the layer has "<< 
-			inputLayer->GetLayerWidth() << " neuron." << std::endl;
-		return -1;
-	}
-	
-	std::vector<Neuron*> inputLayerNeuronList = inputLayer->GetLayerNeuronList();
-	// populating the input neurons
-	for( unsigned i = 0; i < inputLayerNeuronList.size(); ++i )
-	{
-		inputLayerNeuronList.at( i )->SetActivationValue( inputList.at( i ) );
-	}
+	nnModel.SetActivaitonFunciton( activationFuncPerLayerList );
+	nnModel.InitialParameters(); 
+	nnModel.SetDataSet( &inputList ); /// @todo change me to actual dataset
+	nnModel.SetDataLabel( &label ); /// @todo change me to actual labels
 
 	nnModel.ForwardPropagation( );
 

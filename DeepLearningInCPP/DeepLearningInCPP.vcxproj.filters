@@ -51,12 +51,6 @@
     <ClCompile Include="HyperParameters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InputNeuron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OutputNeuron.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ActicationFuncitons.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -87,12 +81,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="HyperParameters.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputNeuron.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OutputNeuron.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ActicationFuncitons.h">

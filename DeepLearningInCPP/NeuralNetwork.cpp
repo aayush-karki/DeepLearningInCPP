@@ -2,33 +2,34 @@
 #include "NeuralNetwork.h"
 
 /// 
-/// @brief default constructor
+/// @brief constructor
 ///
 /// sets up the neuron network.
 /// 
 /// @note assumes that its atleast a 2-layer NN
 /// 
+/// @param a_numData number of input train/test data 
 /// @param a_neuronPerEachLayerList memory address of 
 ///		vector containing the number of neuron each layer
 ///
-NeuralNetwork::NeuralNetwork( const std::vector<int>& a_neuronPerEachLayerList ) :
+NeuralNetwork::NeuralNetwork( unsigned a_numData, const std::vector<int>& a_neuronPerEachLayerList ) :
 	m_dataSet( nullptr ), m_actualLabel(nullptr), m_cost(0.0)
 {
 	assert(a_neuronPerEachLayerList.size() == 3);
 	
 	// setting up input layer
-	m_neuronLayers.push_back(new NeuralNetworkLayer(ENUM_NeuronLayerType::m_inputLayer,
+	m_neuronLayers.push_back(new NeuralNetworkLayer( a_numData, ENUM_NeuronLayerType::m_inputLayer,
 													a_neuronPerEachLayerList.front()));
 
 	// setting up hidden layers
 	for(unsigned i = 1; i < a_neuronPerEachLayerList.size() - 1; ++i)
 	{
-		m_neuronLayers.push_back(new NeuralNetworkLayer(ENUM_NeuronLayerType::m_hiddenLayer,
+		m_neuronLayers.push_back(new NeuralNetworkLayer( a_numData, ENUM_NeuronLayerType::m_hiddenLayer,
 														a_neuronPerEachLayerList.at(i)));
 	}
 
 	// setting up output layer
-	m_neuronLayers.push_back(new NeuralNetworkLayer(ENUM_NeuronLayerType::m_outputLayer,
+	m_neuronLayers.push_back(new NeuralNetworkLayer( a_numData, ENUM_NeuronLayerType::m_outputLayer,
 													a_neuronPerEachLayerList.back()));
 }
 
@@ -77,12 +78,18 @@ void NeuralNetwork::SetActivaitonFunciton( const std::vector<AF::ENUM_ActiFunc>&
 
 /// 
 /// @brief setter function
+/// 
+/// SetDataSet saves the pointer to dataSet and populates the input neuron
+/// 
 /// @param a_dataSet pointer that points to the dataset; 
 ///			dataset is vector of vector of uint8_t
 /// 
-void NeuralNetwork::SetDataSet( std::vector<std::vector<uint8_t>>* a_dataSet )
+void NeuralNetwork::SetDataSet( std::vector<std::vector<uint8_t>*>* a_dataSet )
 {
 	m_dataSet = a_dataSet;
+
+	// populating the input neurons
+	m_neuronLayers[ 0 ]->PopulateInputLayer( m_dataSet );
 }
 
 ///
@@ -95,32 +102,10 @@ void NeuralNetwork::SetDataSet( std::vector<std::vector<uint8_t>>* a_dataSet )
 void NeuralNetwork::ForwardPropagation()
 {
 	// calling the forward propagation on each hidden layer
-	for(unsigned i = 1; i < m_neuronLayers.size() - 1; ++i)
+	for(unsigned i = 1; i < m_neuronLayers.size(); ++i)
 	{
-		m_neuronLayers[ i ]->ForwardPropagation(( m_neuronLayers[ i - 1 ] )->GetLayerNeuronList());
+		m_neuronLayers[ i ]->ForwardPropagation(*( m_neuronLayers[ i - 1 ] )->GetLayerNeuronList());
 	}
-
-	// calling the forward propagation on the output layer
-	// it saves the neuron with the largest activaiton 
-	// getting the output neurons 
-	NeuralNetworkLayer* outputLayer = m_neuronLayers.back();
-	std::vector<Neuron*> outputNeuralList = outputLayer->GetLayerNeuronList();
-	Neuron* largestActivatedNeuron = *(outputNeuralList.begin());
-
-	for( unsigned neuronIdx = 0; neuronIdx < outputNeuralList.size() - 1; ++neuronIdx ) 
-	{
-		outputNeuralList.at( neuronIdx )->LinerActivation( m_neuronLayers[ m_neuronLayers.size() - 2 ]->GetLayerNeuronList());
-
-		// checking and saving the neuron with the largest activation value
-		if( outputNeuralList.at( neuronIdx )->GetActivationValue() > largestActivatedNeuron->GetActivationValue() )
-		{
-			largestActivatedNeuron = outputNeuralList.at( neuronIdx );
-		}
-	}
-
-	// caching the neuron with the largest activation value
-	m_cachedPredictedNeuron.push_back( largestActivatedNeuron );
-
 }
 
 /// 
@@ -128,6 +113,7 @@ void NeuralNetwork::ForwardPropagation()
 /// 
 void NeuralNetwork::CalculateCost()
 {
+
 	// checking that the number matches
 	assert( m_cachedPredictedNeuron.size() == m_actualLabel->size() );
 
@@ -137,7 +123,7 @@ void NeuralNetwork::CalculateCost()
 	// for each predicted neuron summing the loss error
 	for( unsigned idx = 0; idx < m_cachedPredictedNeuron.size(); ++idx )
 	{
-		m_cost += m_cachedPredictedNeuron.at( idx )->CalculateLoss( m_actualLabel->at(idx));
+		m_cost += m_cachedPredictedNeuron.at( idx )->CalculateLoss(idx, m_actualLabel->at(idx));
 	}
 
 	m_cost /= ( m_actualLabel->size() );
@@ -153,19 +139,53 @@ Neuron* NeuralNetwork::GetPredictedNeuron() const
 {
 	// getting the output neurons 
 	NeuralNetworkLayer* outputLayer = m_neuronLayers.back();
-	std::vector<Neuron*> outputNeuralList = outputLayer->GetLayerNeuronList();
+	const std::vector<Neuron*>* outputNeuralList = outputLayer->GetLayerNeuronList();
 
 	// finding the largest activation
-	std::vector<Neuron*>::iterator currIte = outputNeuralList.begin();
+	std::vector<Neuron*>::const_iterator currIte = outputNeuralList->begin();
 	Neuron* largestActivatedNeuron = *currIte;
 
-	while( currIte != outputNeuralList.end() )
+	while( currIte != outputNeuralList->end() )
 	{
-		if( ( *currIte )->GetActivationValue() > largestActivatedNeuron->GetActivationValue() )
+		if( ( *currIte )->GetActivationVector()->back() > largestActivatedNeuron->GetActivationVector()->back() )
 		{
 			largestActivatedNeuron = *currIte;
 		}
 	}
 
 	return largestActivatedNeuron;
+}
+
+/// 
+/// @brief Calculates all the predicted neuron and stores it in the cached predicted neuron
+/// 
+/// The index of the m_cachedPredictedNeuron corresponds to the index of image in dataset that it 
+///		predicted for.
+/// 
+void NeuralNetwork::CacheAllPredictedNeuron()
+{
+	// getting the output neurons 
+	NeuralNetworkLayer* outputLayer = m_neuronLayers.back();
+	std::vector<Neuron*>* outputNeuralList = outputLayer->GetLayerNeuronList();
+
+	m_cachedPredictedNeuron.resize( outputNeuralList->at( 0 )->GetActivationVector()->size(), outputNeuralList->at( 0 ) );
+
+	// for each image in the dataset finding the largest activation for that image
+	for( unsigned imgIdx = 0; imgIdx < outputNeuralList->at( 0 )->GetActivationVector()->size(); ++imgIdx )
+	{
+		std::vector<Neuron*>::const_iterator neuronIte = outputNeuralList->begin();
+		Neuron* largestActivatedNeuron = *neuronIte;
+
+		// for each neuron in the output layer
+		while( neuronIte != outputNeuralList->end() )
+		{
+			if( ( *neuronIte )->GetActivationVector()->at( imgIdx ) > largestActivatedNeuron->GetActivationVector()->at( imgIdx ) )
+			{
+				largestActivatedNeuron = *neuronIte;
+			}
+		}
+
+		// updating the cached predicted neuron list
+		m_cachedPredictedNeuron.at( imgIdx ) = largestActivatedNeuron;
+	}
 }

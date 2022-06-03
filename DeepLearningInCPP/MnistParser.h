@@ -5,10 +5,12 @@
 /// @brief  This file is a header file for MnistParser class that parses the mnist database's file
 ///		into something that we can use
 /// 
-/// @note assumens that for every data set there is a label file
+/// @note assumes that for every data set there is a label file
 /// 
 /// @note All the integers in the files are stored in the MSB first (high endian) format used by most non-Intel processors.
 ///  Users of Intel processors and other low-endian machines must flip the bytes of the header.
+/// 
+/// @warning the vector for a image is dynamically allocated
 /// 
 /// @warning Currently designed to only process 32 bit unsigned int data
 /// 
@@ -26,8 +28,8 @@ public:
 	MnistParser(std::string a_labelFilePath, std::string a_setFilePath); // constructor
 	~MnistParser(); // deconstructor
 	
-	const std::vector<uint8_t>& GetActualLabels() const; // getter function
-	const std::vector<std::vector<uint8_t>>& GetDataSet() const; // getter function
+	const std::vector<uint8_t>* GetActualLabels() const; // getter function
+	const std::vector<std::vector<uint8_t>*>* GetDataSet() const; // getter function
 	const uint32_t GetTotalLabelNum() const; // getter function
 	const uint32_t GetTotalImgNum() const; // getter function
 	const uint8_t GetImgRow() const; // getter function
@@ -42,7 +44,7 @@ private:
 private:
 	// private data member
 	std::vector<uint8_t> m_actualLabel; // pointer to the vector containing the actual label
-	std::vector<std::vector<uint8_t>> m_dataSet; // pointer to the vector containg the train/test set
+	std::vector<std::vector<uint8_t>*> m_dataSet; // pointer to the vector containg the train/test set
 
 	uint32_t m_totalLableNum; // total number of labels
 	uint32_t m_totalImgNum; // total number of images
@@ -65,20 +67,13 @@ inline MnistParser::MnistParser(std::string a_labelFilePath, std::string a_setFi
 }
 
 /// 
-/// @brief destructor 
-/// 
-inline MnistParser::~MnistParser()
-{
-}
-
-/// 
 /// @brief getter function to get the pointer to the vector containing the actual labels
 /// 
 /// @return pointer to the vector containing the actual labels
 /// 
-inline const std::vector<uint8_t>& MnistParser::GetActualLabels() const
+inline const std::vector<uint8_t>* MnistParser::GetActualLabels() const
 {
-	return m_actualLabel;
+	return &m_actualLabel;
 }
 
 /// 
@@ -86,9 +81,9 @@ inline const std::vector<uint8_t>& MnistParser::GetActualLabels() const
 /// 
 /// @return pointer to the vector containing the data sets
 /// 
-inline const std::vector<std::vector<uint8_t>>& MnistParser::GetDataSet() const
+inline const std::vector<std::vector<uint8_t>*>* MnistParser::GetDataSet() const
 {
-	return m_dataSet;
+	return &m_dataSet;
 }
 
 /// 
